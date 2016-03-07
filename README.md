@@ -10,6 +10,19 @@ This server is currently hosted at [http://ec2-52-26-12-151.us-west-2.compute.am
 
 Querying `/getcity?q=` will return a json array of cities in the state of Utah filtered by the prefix provided by the `q` argument.
 
+```json
+\getcity?q=Pa
+[
+    {"city":"Panguitch"},
+    {"city":"Paradise"},
+    {"city":"Paragonah"},
+    {"city":"Park City"},
+    {"city":"Park Valley"},
+    {"city":"Parowan"},
+    {"city":"Payson"}
+]
+```
+
 ### Fibonacci Calculator
 
 Querying `\fibonacci?q=` will return a json array of `q + 1` fibonacci numbers.  Example:
