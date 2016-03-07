@@ -25,7 +25,7 @@ Querying `/getcity?q=` will return a json array of cities in the state of Utah f
 
 ### Fibonacci Calculator
 
-Querying `\fibonacci?q=` will return a json array of `q + 1` fibonacci numbers.  Example:
+Querying `\fibonacci?q=` will return a json array of `q` fibonacci numbers.  Example:
 
 ```json
 \fibonacci?q=4
