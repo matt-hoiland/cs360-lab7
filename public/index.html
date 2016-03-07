@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wheather!</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js">
+
+    </script>
+</head>
+<body>
+
+<form>
+    Enter A Utah City: <input type="text" id="city" value="" />
+    <br />
+    Suggestion:
+    <span id="suggestion">
+    </span>
+    <input id="button" type="submit" value="Submit">
+</form>
+
+<p>City</p>
+<textarea id="dispcity">No City</textarea>
+<p>Current Weather</p>
+<div id="weather">No weather</div>
+<h2>Enjoy a random <a href="https://www.youtube.com/user/numberphile">Numberphile</a> video!</h2>
+<div id="player"></div>
+
+<footer>Weather services provided by <a href="https://www.wunderground.com/weather/api/">Weather Underground</a></footer>
+
+<script type="text/javascript">
+    // Load the iframe asynchronously
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    var player;
+    function onYouTubeIframeAPIReady() {
+    console.log(YT);
+    player = new YT.Player('player', {
+      height: '390',
+      width: '640',
+      events: {}
+    });
+    }
+
+    function makeWuQuery(city) {
+        var wuKey = '3d931fd623690fbe';
+        var wuStart = 'http://api.wunderground.com/api/';
+        var wuConds = '/conditions/q/UT/';
+
+        var nuCity = city.replace(' ', '_');
+        return wuStart + wuKey + wuConds + nuCity + '.json';
+    }
+
+    $( '#city' ).keyup(function(e) {
+        var myurl = '/getcity?q=' + e.currentTarget.value;
+        $.getJSON(myurl, function(data) {
+            var ul = document.createElement('ul');
+            data.forEach(function(el) {
+                var li = document.createElement('li');
+                li.innerHTML = el.city;
+                ul.appendChild(li);
+            });
+            while($('#suggestion')[0].firstChild) {
+                $('#suggestion')[0].removeChild($('#suggestion')[0].firstChild);
+            }
+            $('#suggestion')[0].appendChild(ul);
+        })
+    });
+
+    $('#button').click(function(e){
+        var city = $('#city')[0].value;
+        e.preventDefault();
+        $('#dispcity').text(city);
+
+        $.getJSON(makeWuQuery(city), function(data) {
+            console.log(data);
+            var obvs = data.current_observation;
+            $('#weather')[0].innerHTML = "";
+            var icon = document.createElement('img');
+            icon.src = obvs.icon_url;
+            var ul = document.createElement('ul');
+            var temp = document.createElement('li');
+            temp.innerHTML = "Temperature: " + obvs.temperature_string;
+            var loc = document.createElement('li');
+            loc.innerHTML = "Locaiton: " + city;
+            var desc = document.createElement('li');
+            desc.innerHTML = "Weather: " + obvs.weather;
+            $('#weather')[0].appendChild(icon);
+            $('#weather')[0].appendChild(ul);
+            ul.appendChild(loc);
+            ul.appendChild(temp);
+            ul.appendChild(desc);
+
+            $.getJSON('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=UUoxcjq-8xIDTYp3uz647V5A&key=AIzaSyB-9UZEdFAwHBiriXA3wiqvnrMdUlGS91o',
+              function(data){
+                var vidId = data.items[Math.floor(Math.random()*data.items.length)].snippet.resourceId.videoId;
+                if (player == undefined) return;
+                player.loadVideoById(
+                  {
+                    videoId:vidId,
+                    startSeconds:0,
+                  });
+                player.playVideo();
+              });
+        });
+    });
+
+</script>
+
+</body>
+</html>
